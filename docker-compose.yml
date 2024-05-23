@@ -1,0 +1,48 @@
+version: '3'
+
+networks:
+  laravel:
+
+
+services:
+  server:
+    build:
+      context: ./dockerfiles
+      dockerfile: nginx.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    ports:
+      - "8085:80"
+    volumes:
+      - ./src:/var/www/html:delegated
+    depends_on:
+      - php
+      - redis
+    container_name: docker-compose-template-server
+    networks:
+      - laravel
+
+  php:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    ports:
+      - "9005:9000"
+    volumes:
+      - ./src:/var/www/html:delegated
+    container_name: docker-compose-template-php
+    networks:
+      - laravel
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "6385:6379"
+    container_name: docker-compose-template-redis
+    networks:
+      - laravel
