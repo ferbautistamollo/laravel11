@@ -1,0 +1,41 @@
+name: Docker Compose
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+        ports:
+          - 8085:80
+          - 9005:9000
+          - 6385:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build images
+        run: docker-compose -f docker-compose.yml build
+
+      - name: Run containers
+        run: docker-compose -f docker-compose.yml up -d
+
+      - name: Check containers
+        run: docker-compose -f docker-compose.yml ps
+
+      # Aquí puedes agregar más pasos, como ejecutar pruebas o despliegues adicionales
+
