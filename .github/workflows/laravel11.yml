@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "master" ]
 
+    
 jobs:
   laravel-tests:
     runs-on: ubuntu-22.04
