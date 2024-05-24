@@ -34,12 +34,7 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          docker build -t my-php-app:latest -f dockerfiles/php.dockerfile .
-          docker build -t my-nginx-app:latest -f dockerfiles/nginx.dockerfile .
-
-      - name: Run Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml up -d
+          docker-compose up -d 
 
       - name: Wait for services to be ready
         run: |
