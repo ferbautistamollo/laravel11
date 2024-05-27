@@ -42,7 +42,7 @@ jobs:
 
       - name: Composer Install
         run: |
-          composer install
+          docker exec docker-compose-template-php composer install
 
       - name: Run tests
         run: |
