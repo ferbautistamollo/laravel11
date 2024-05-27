@@ -46,7 +46,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker exec docker-compose-template-php php artisan test
+          docker-compose exec -T --user root php php artisan test
 
       - name: Tear down Docker Compose
         run: |
