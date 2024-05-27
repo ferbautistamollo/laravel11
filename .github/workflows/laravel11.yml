@@ -42,7 +42,7 @@ jobs:
 
       - name: Permisos
         run: |
-          docker exec docker-compose-template-php sudo chown -R www-data:www-data /var/www/html
+          docker-compose ps
 
       - name: Composer Install
         run: |
