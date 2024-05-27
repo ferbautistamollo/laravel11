@@ -14,7 +14,6 @@ jobs:
 
       - name: Copy .env
         run: 
-          docker-compose exec -T --user root php php artisan key:generate
           php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: Set up Docker Buildx
@@ -48,6 +47,7 @@ jobs:
       - name: Permisos
         run: |
           docker-compose exec -T --user root php composer install
+          docker-compose exec -T --user root php php artisan key:generate
 
       - name: Run tests
         run: |
