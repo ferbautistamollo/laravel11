@@ -40,9 +40,13 @@ jobs:
         run: |
           sleep 30 # Adjust as needed to wait for services to be ready
 
+      - name: Permisos
+        run: |
+          docker exec docker-compose-template-php chown -R www-data:www-data /var/www/html
+
       - name: Composer Install
         run: |
-          docker-compose ps
+          docker exec docker-compose-template-php composer install
 
       - name: Run tests
         run: |
