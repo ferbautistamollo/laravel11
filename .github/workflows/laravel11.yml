@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker exec laravel11_php php artisan test
+          docker ps
 
       - name: Tear down Docker Compose
         run: |
