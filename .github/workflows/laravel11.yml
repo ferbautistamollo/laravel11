@@ -40,10 +40,14 @@ jobs:
         run: |
           sleep 30 # Adjust as needed to wait for services to be ready
 
+      - name: Composer Install
+        run: |
+          composer install
+
       - name: Run tests
         run: |
           docker exec docker-compose-template-php php artisan test
-          
+
       - name: Tear down Docker Compose
         run: |
           docker-compose -f docker-compose.yml down
