@@ -46,7 +46,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker-compose exec -T php php artisan key:generate
+          docker-compose exec -T --user root php php artisan key:generate
           docker-compose exec -T --user root php php artisan test
 
       - name: Tear down Docker Compose
