@@ -42,7 +42,7 @@ jobs:
 
       - name: Run tests
         run: |
-          docker ps
+          docker exec  docker-compose-template-php php artisan test
 
       - name: Tear down Docker Compose
         run: |
