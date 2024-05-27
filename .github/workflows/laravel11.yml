@@ -42,7 +42,7 @@ jobs:
 
       - name: Permisos
         run: |
-          docker-compose exec -T php composer install
+          docker-compose exec -T --user root php composer install
 
       - name: Run tests
         run: |
