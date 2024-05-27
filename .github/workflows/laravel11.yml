@@ -47,7 +47,6 @@ jobs:
       - name: Permisos
         run: |
           docker-compose exec -T --user root php composer install
-          docker-compose exec -T --user root php php artisan key:generate
 
       - name: Run tests
         run: |
