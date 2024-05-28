@@ -39,6 +39,10 @@ jobs:
         run: |
           sleep 15
 
+      - name: Prueba
+        run: |
+          docker-compose ps
+
       - name: Installation of dependencies
         run: |
           docker-compose exec -T --user root php composer install
