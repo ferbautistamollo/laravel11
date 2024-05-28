@@ -3,6 +3,7 @@ version: '3'
 networks:
   laravel:
 
+
 services:
   server:
     build:
