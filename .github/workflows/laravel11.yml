@@ -15,6 +15,10 @@ jobs:
       - name: Copy .env
         run: 
           php -r "file_exists('.env') || copy('.env.example', '.env');"
+      
+      - name: Ver
+        run: 
+          ls -a
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
