@@ -12,7 +12,6 @@ WORKDIR /var/www/html
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# MacOS staff group's gid is 20, so is the dialout group in alpine linux. We're not using it, let's just remove it.
 RUN delgroup dialout
 
 RUN addgroup -g ${GID} --system laravel
@@ -26,11 +25,16 @@ RUN apk add --no-cache postgresql-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql
 
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install swoole \
+    && docker-php-ext-enable swoole \
+    && apk del .build-deps
+
 RUN mkdir -p /usr/src/php/ext/redis \
     && curl -L https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis
-    
+
 USER laravel
 
-CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=9000"]
