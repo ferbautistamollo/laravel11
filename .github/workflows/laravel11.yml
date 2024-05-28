@@ -13,11 +13,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Copy .env
-        run: 
+        run: |
+          cd src
+          ls -a
           php -r "file_exists('.env') || copy('.env.example', '.env');"
-      
-      - name: Ver
-        run: 
           ls -a
 
       - name: Set up Docker Buildx
