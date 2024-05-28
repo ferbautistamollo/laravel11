@@ -48,11 +48,15 @@ jobs:
         run: |
           docker-compose exec -T --user root php composer install
 
+      - name: Generate key
+        run: |
+          docker-compose exec -T --user root php php artisan key:generate
+          
       - name: Run tests
         run: |
           docker-compose exec -T --user root php php artisan test
 
-          
+
       - name: Tear down Docker Compose
         run: |
           docker-compose -f docker-compose.yml down
