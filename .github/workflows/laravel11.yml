@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Copy .env
-        run: 
+        run: |
           cd src
           php -r "file_exists('.env') || copy('.env.example', '.env');"
 
@@ -32,16 +32,21 @@ jobs:
         uses: docker/setup-qemu-action@v2
 
       - name: Build and push Docker images
-        run: docker-compose up -d 
+        run: |
+          docker-compose up -d 
 
       - name: Wait for services to be ready
-        run: sleep 15
+        run: |
+          sleep 15
 
       - name: Installation of dependencies
-        run: docker-compose exec -T --user root php composer install
+        run: |
+          docker-compose exec -T --user root php composer install
 
       - name: Generate key
-        run: docker-compose exec -T --user root php php artisan key:generate
+        run: |
+          docker-compose exec -T --user root php php artisan key:generate
           
-      - name: Run Tests Feature
-        run: docker-compose exec -T --user root php php artisan test
+      - name: Run Tests
+        run: |
+          docker-compose exec -T --user root php php artisan test
