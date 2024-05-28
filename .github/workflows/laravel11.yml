@@ -52,6 +52,7 @@ jobs:
         run: |
           docker-compose exec -T --user root php php artisan test
 
+          
       - name: Tear down Docker Compose
         run: |
           docker-compose -f docker-compose.yml down
