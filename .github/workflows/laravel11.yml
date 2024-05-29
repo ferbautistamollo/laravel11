@@ -41,7 +41,7 @@ jobs:
 
       - name: list
         run: |
-            docker-compose ps -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+            docker-compose ps
 
       - name: Installation of dependencies
         run: |
@@ -54,3 +54,7 @@ jobs:
       - name: Run Tests
         run: |
           docker-compose exec -T --user root php php artisan test
+
+      - name: Run Tests
+        run: |
+          docker-compose exec -T --user root php php artisan octane:start
