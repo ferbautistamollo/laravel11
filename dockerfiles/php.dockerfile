@@ -30,6 +30,11 @@ RUN mkdir -p /usr/src/php/ext/redis \
     && curl -L https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis
+
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install swoole \
+    && docker-php-ext-enable swoole \
+    && apk del .build-deps
     
 USER laravel
 
