@@ -12,13 +12,15 @@ WORKDIR /var/www/html
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-RUN delgroup dialout \
-    && addgroup -g ${GID} --system laravel \
-    && adduser -G laravel --system -D -s /bin/sh -u ${UID} laravel
+# MacOS staff group's gid is 20, so is the dialout group in alpine linux. We're not using it, let's just remove it.
+RUN delgroup dialout
 
-RUN sed -i "s/user = www-data/user = laravel/g" /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i "s/group = www-data/group = laravel/g" /usr/local/etc/php-fpm.d/www.conf \
-    && echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
+RUN addgroup -g ${GID} --system laravel
+RUN adduser -G laravel --system -D -s /bin/sh -u ${UID} laravel
+
+RUN sed -i "s/user = www-data/user = laravel/g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s/group = www-data/group = laravel/g" /usr/local/etc/php-fpm.d/www.conf
+RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
 RUN apk add --no-cache postgresql-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
@@ -29,9 +31,11 @@ RUN mkdir -p /usr/src/php/ext/redis \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis
 
+# Instalar extensiones de Swoole y Octane
 RUN pecl install swoole \
     && docker-php-ext-enable swoole
-
+    
 USER laravel
 
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8000"]
+# CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=9000"]
