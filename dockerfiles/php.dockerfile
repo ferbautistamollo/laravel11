@@ -1,4 +1,4 @@
-FROM php:8.1-cli-alpine
+FROM php:8-fpm-alpine
 
 ARG UID
 ARG GID
@@ -6,37 +6,36 @@ ARG GID
 ENV UID=${UID}
 ENV GID=${GID}
 
-# Crear el directorio de la aplicación
 RUN mkdir -p /var/www/html
 
 WORKDIR /var/www/html
 
-# Copiar Composer desde una imagen existente
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# Configurar el entorno de usuario
+# MacOS staff group's gid is 20, so is the dialout group in alpine linux. We're not using it, let's just remove it.
 RUN delgroup dialout
+
 RUN addgroup -g ${GID} --system laravel
 RUN adduser -G laravel --system -D -s /bin/sh -u ${UID} laravel
-RUN apk add --no-cache postgresql-dev $PHPIZE_DEPS
 
-# Configurar PHP con PostgreSQL y Redis
-RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+RUN sed -i "s/user = www-data/user = laravel/g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s/group = www-data/group = laravel/g" /usr/local/etc/php-fpm.d/www.conf
+RUN echo "php_admin_flag[log_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
+
+RUN apk add --no-cache postgresql-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql
+
 RUN mkdir -p /usr/src/php/ext/redis \
     && curl -L https://github.com/phpredis/phpredis/archive/5.3.4.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis
 
-# Instalar extensiones necesarias para Octane
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
     && pecl install swoole \
     && docker-php-ext-enable swoole \
     && apk del .build-deps
-
-# Instalar Octane
-RUN composer global require laravel/octane
-
+    
 USER laravel
 
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=9000"]
+CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
