@@ -41,9 +41,8 @@ jobs:
 
       - name: list
         run: |
-            docker-compose ps
+            docker-compose ps -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-            
       - name: Installation of dependencies
         run: |
           docker-compose exec -T --user root php composer install
