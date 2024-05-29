@@ -41,12 +41,12 @@ jobs:
 
       - name: Installation of dependencies
         run: |
-          docker-compose exec -T --user laravel php composer install
+          docker-compose exec -T --user root php composer install
 
       - name: Generate key
         run: |
-          docker-compose exec -T --user laravel php php artisan key:generate
+          docker-compose exec -T --user root php php artisan key:generate
           
       - name: Run Tests
         run: |
-          docker-compose exec -T --user laravel php php artisan test
+          docker-compose exec -T --user root php php artisan test
