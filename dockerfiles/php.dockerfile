@@ -31,11 +31,11 @@ RUN mkdir -p /usr/src/php/ext/redis \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis
 
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    && pecl install swoole \
-    && docker-php-ext-enable swoole \
-    && docker-php-ext-install pcntl \
-    && apk del .build-deps
+#RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+#    && pecl install swoole \
+#    && docker-php-ext-enable swoole \
+#    && docker-php-ext-install pcntl \
+#    && apk del .build-deps
     
 USER laravel
 
